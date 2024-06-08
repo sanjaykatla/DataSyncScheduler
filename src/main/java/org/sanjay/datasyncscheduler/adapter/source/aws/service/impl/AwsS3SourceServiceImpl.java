@@ -15,7 +15,7 @@ public class AwsS3SourceServiceImpl implements SourceStorageService {
     private final SourceStorageProxy sourceStorageProxy;
 
     public AwsS3SourceServiceImpl(
-            @Qualifier("awsSourceStorageProxy")
+            @Qualifier("awsS3Proxy")
             @Autowired SourceStorageProxy sourceStorageProxy) {
         this.sourceStorageProxy = sourceStorageProxy;
     }

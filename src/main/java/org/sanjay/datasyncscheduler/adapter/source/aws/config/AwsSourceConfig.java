@@ -12,11 +12,11 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-public class AwsConfig {
+public class AwsSourceConfig {
 
     private final AwsProperties awsProperties;
 
-    AwsConfig(AwsProperties awsProperties) {
+    AwsSourceConfig(AwsProperties awsProperties) {
         this.awsProperties = awsProperties;
     }
 
@@ -32,7 +32,7 @@ public class AwsConfig {
                 .build();
     }
 
-    @Bean(name = "awsSourceStorageProxy")
+    @Bean(name = "awsS3Proxy")
     public SourceStorageProxy getAwsSourceStorageProxy() {
         return new AwsS3ProxyImpl(s3Client());
     }
