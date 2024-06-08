@@ -2,4 +2,4 @@
 
 ## High level design
 
-![img.png](high-level-design.md/img.png)
+![img.png](img/high-level-design.png)
