@@ -1,5 +1,9 @@
 package org.sanjay.datasyncscheduler.adapter.source.aws.config;
 
+import org.sanjay.datasyncscheduler.adapter.source.aws.proxy.impl.AwsS3ProxyImpl;
+import org.sanjay.datasyncscheduler.adapter.source.aws.service.impl.AwsS3SourceServiceImpl;
+import org.sanjay.datasyncscheduler.adapter.source.proxy.SourceStorageProxy;
+import org.sanjay.datasyncscheduler.adapter.source.service.SourceStorageService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -26,6 +30,16 @@ public class AwsConfig {
                 .region(Region.of(awsProperties.getRegion()))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCred))
                 .build();
+    }
+
+    @Bean(name = "awsSourceStorageProxy")
+    public SourceStorageProxy getAwsSourceStorageProxy() {
+        return new AwsS3ProxyImpl(s3Client());
+    }
+
+    @Bean(name = "awsSourceStorageService")
+    public SourceStorageService getAwsSourceStorageService() {
+        return new AwsS3SourceServiceImpl(getAwsSourceStorageProxy());
     }
 }
 

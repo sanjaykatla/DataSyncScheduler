@@ -1,4 +1,4 @@
-package org.sanjay.datasyncscheduler.adapter.source;
+package org.sanjay.datasyncscheduler.adapter.source.proxy;
 
 import org.sanjay.datasyncscheduler.adapter.source.exception.*;
 

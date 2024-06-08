@@ -1,8 +1,7 @@
 package org.sanjay.datasyncscheduler.adapter.source.aws.proxy.impl;
 
-import org.sanjay.datasyncscheduler.adapter.source.SourceStorageProxy;
+import org.sanjay.datasyncscheduler.adapter.source.proxy.SourceStorageProxy;
 import org.sanjay.datasyncscheduler.adapter.source.exception.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -17,7 +16,7 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
 
     private final S3Client s3Client;
 
-    AwsS3ProxyImpl(@Autowired S3Client s3Client) {
+    public AwsS3ProxyImpl(S3Client s3Client) {
         this.s3Client = s3Client;
     }
 
