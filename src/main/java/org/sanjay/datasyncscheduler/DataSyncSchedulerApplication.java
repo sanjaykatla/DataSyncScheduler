@@ -12,7 +12,6 @@ public class DataSyncSchedulerApplication {
     public static void main(String[] args) {
         SpringApplication.run(DataSyncSchedulerApplication.class, args);
         logger.info("Data Sync Scheduler Application Started");
-        logger.error("Data Sync Scheduler Application Started");
     }
 
 }
