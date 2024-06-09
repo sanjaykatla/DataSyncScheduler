@@ -1,12 +1,13 @@
 package org.sanjay.datasyncscheduler.adapter.source.factory.impl;
 
 import org.sanjay.datasyncscheduler.adapter.source.enums.SourceType;
+import org.sanjay.datasyncscheduler.adapter.source.factory.SourceFactory;
 import org.sanjay.datasyncscheduler.adapter.source.service.SourceStorageService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SourceFactoryImpl {
+public class SourceFactoryImpl implements SourceFactory {
 
     private final SourceStorageService awsSourceStorageService;
 
