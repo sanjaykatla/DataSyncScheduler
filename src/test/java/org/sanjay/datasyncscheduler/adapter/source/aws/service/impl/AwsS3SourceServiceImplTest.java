@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sanjay.datasyncscheduler.adapter.source.exception.*;
 import org.sanjay.datasyncscheduler.adapter.source.proxy.SourceStorageProxy;
+import org.sanjay.datasyncscheduler.model.SyncObject;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,16 +36,18 @@ class AwsS3SourceServiceImplTest {
     @Test
     void testListObjectsSuccess() throws InvalidSourceKeyNameException, SourceException, SourceServiceException, SourceSdkClientException {
         String bucketName = "testBucket";
-        List<String> mockObjectList = Arrays.asList("object1", "object2");
+        SyncObject syncObject1 = new SyncObject("object1", 123L, Instant.now());
+        SyncObject syncObject2 = new SyncObject("object2", 123L, Instant.now());
+        List<SyncObject> mockObjectList = Arrays.asList(syncObject1, syncObject2);
 
         when(sourceStorageProxy.listObjects(bucketName)).thenReturn(mockObjectList);
 
-        List<String> result = awsS3SourceService.listObjects(bucketName);
+        List<SyncObject> result = awsS3SourceService.listObjects(bucketName);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("object1", result.get(0));
-        assertEquals("object2", result.get(1));
+        assertEquals("object1", result.get(0).getKey());
+        assertEquals("object2", result.get(1).getKey());
 
         verify(sourceStorageProxy, times(1)).listObjects(bucketName);
     }
