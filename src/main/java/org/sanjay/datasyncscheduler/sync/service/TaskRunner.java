@@ -1,11 +1,11 @@
 package org.sanjay.datasyncscheduler.sync.service;
 
-import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
+import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 
 public interface TaskRunner {
 
     void run(
-            SyncTaskConfig syncTaskConfig,
+            TaskConfiguration taskConfiguration,
             String bucketName,
             String key
     );

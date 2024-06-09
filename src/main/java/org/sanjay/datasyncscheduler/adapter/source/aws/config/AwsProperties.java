@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "aws")
+@ConfigurationProperties(prefix = "source.aws")
 @Setter
 @Getter
 public class AwsProperties {

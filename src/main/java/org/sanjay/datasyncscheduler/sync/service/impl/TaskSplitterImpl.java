@@ -7,7 +7,7 @@ import org.sanjay.datasyncscheduler.adapter.source.exception.SourceSdkClientExce
 import org.sanjay.datasyncscheduler.adapter.source.exception.SourceServiceException;
 import org.sanjay.datasyncscheduler.adapter.source.factory.SourceFactory;
 import org.sanjay.datasyncscheduler.adapter.source.service.SourceStorageService;
-import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
+import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 import org.sanjay.datasyncscheduler.sync.service.TaskRunner;
 import org.sanjay.datasyncscheduler.sync.service.TaskSplitter;
 import org.slf4j.Logger;
@@ -24,14 +24,14 @@ public class TaskSplitterImpl implements TaskSplitter {
     private final TaskRunner taskRunner;
 
     @Override
-    public void splitAndSubmit(SyncTaskConfig syncTaskConfig) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException {
+    public void splitAndSubmit(TaskConfiguration taskConfiguration) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException {
 
-        SourceStorageService sourceStorageService = sourceFactory.getSourceStorageService(syncTaskConfig.getSourceType());
-        String bucketName = syncTaskConfig.getBucketName();
+        SourceStorageService sourceStorageService = sourceFactory.getSourceStorageService(taskConfiguration.getSourceType());
+        String bucketName = taskConfiguration.getBucketName();
         sourceStorageService.listObjects(bucketName)
                 .forEach(objectKey -> {
-                    logger.info("Task: {} is Submitted for bucket: {} for object: {}", syncTaskConfig.getId(), bucketName, objectKey);
-                    taskRunner.run(syncTaskConfig, bucketName, objectKey);
+                    logger.info("Task: {} is Submitted for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, objectKey);
+                    taskRunner.run(taskConfiguration, bucketName, objectKey);
                 });
 
     }

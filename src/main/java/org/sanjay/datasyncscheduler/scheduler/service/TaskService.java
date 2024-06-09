@@ -1,10 +1,10 @@
 package org.sanjay.datasyncscheduler.scheduler.service;
 
-import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
+import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 
 import java.util.List;
 
 public interface TaskService {
 
-    List<SyncTaskConfig> getAllTasks();
+    List<TaskConfiguration> getAllTasks();
 }
