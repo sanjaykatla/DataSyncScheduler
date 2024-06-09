@@ -29,9 +29,9 @@ public class TaskSplitterImpl implements TaskSplitter {
         SourceStorageService sourceStorageService = sourceFactory.getSourceStorageService(taskConfiguration.getSourceType());
         String bucketName = taskConfiguration.getBucketName();
         sourceStorageService.listObjects(bucketName)
-                .forEach(objectKey -> {
-                    logger.info("Task: {} is Submitted for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, objectKey);
-                    taskRunner.run(taskConfiguration, bucketName, objectKey);
+                .forEach(objectToSync -> {
+                    logger.info("Task: {} is Submitted for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, objectToSync.getKey());
+                    taskRunner.run(taskConfiguration, bucketName, objectToSync);
                 });
 
     }

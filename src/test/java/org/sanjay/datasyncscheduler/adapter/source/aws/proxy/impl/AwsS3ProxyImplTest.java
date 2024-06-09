@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sanjay.datasyncscheduler.adapter.source.exception.*;
+import org.sanjay.datasyncscheduler.model.SyncObject;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -41,11 +42,11 @@ public class AwsS3ProxyImplTest {
         when(s3Client.listObjects(any(ListObjectsRequest.class))).thenReturn(listObjectsResponse);
 
         // Call the method
-        List<String> objectKeys = awsS3Proxy.listObjects("my-bucket");
+        List<SyncObject> objectKeys = awsS3Proxy.listObjects("my-bucket");
 
         // Assertions
         assertEquals(1, objectKeys.size());
-        assertEquals("object1", objectKeys.get(0));
+        assertEquals("object1", objectKeys.get(0).getKey());
         verify(s3Client, times(1)).listObjects(any(ListObjectsRequest.class));
     }
 

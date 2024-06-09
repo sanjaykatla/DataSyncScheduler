@@ -2,6 +2,7 @@ package org.sanjay.datasyncscheduler.adapter.source.aws.proxy.impl;
 
 import org.sanjay.datasyncscheduler.adapter.source.proxy.SourceStorageProxy;
 import org.sanjay.datasyncscheduler.adapter.source.exception.*;
+import org.sanjay.datasyncscheduler.model.SyncObject;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
@@ -21,9 +22,9 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
     }
 
     @Override
-    public List<String> listObjects(String bucketName) throws InvalidSourceKeyNameException, SourceException, SourceServiceException, SourceSdkClientException {
+    public List<SyncObject> listObjects(String bucketName) throws InvalidSourceKeyNameException, SourceException, SourceServiceException, SourceSdkClientException {
 
-        List<String> objectKeys = new LinkedList<>();
+        List<SyncObject> objects = new LinkedList<>();
         ListObjectsRequest listObjects = ListObjectsRequest
                 .builder()
                 .bucket(bucketName)
@@ -31,9 +32,12 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
         try {
 
             ListObjectsResponse res = s3Client.listObjects(listObjects);
-            List<S3Object> objects = res.contents();
+            List<S3Object> sourceObjects = res.contents();
 
-            objects.stream().map(S3Object::key).forEach(objectKeys::add);
+            for(S3Object sourceObject : sourceObjects) {
+                SyncObject syncObject = new SyncObject(sourceObject.key(), sourceObject.size());
+                objects.add(syncObject);
+            }
         } catch (NoSuchBucketException e) {
             throw new InvalidSourceKeyNameException(e.getMessage(), e.getCause());
         } catch (S3Exception e) {
@@ -43,7 +47,7 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
         } catch (SdkClientException e) {
             throw new SourceSdkClientException(e.getMessage(), e.getCause());
         }
-        return objectKeys;
+        return objects;
     }
 
     @Override
@@ -51,6 +55,31 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
+                .build();
+
+        byte[] data;
+        try {
+            data = s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
+        } catch (NoSuchKeyException e) {
+            throw new InvalidSourceKeyNameException(e.getMessage(), e.getCause());
+        } catch (InvalidObjectStateException e) {
+            throw new InvalidSourceObjectStateException(e.getMessage(), e.getCause());
+        } catch (S3Exception e) {
+            throw new SourceException(e.getMessage(), e.getCause());
+        } catch (AwsServiceException e) {
+            throw new SourceServiceException(e.getMessage(), e.getCause());
+        } catch (SdkClientException e) {
+            throw new SourceSdkClientException(e.getMessage(), e.getCause());
+        }
+        return data;
+    }
+
+    @Override
+    public byte[] getObjectAsBytes(String bucketName, String key, long start, long end) throws InvalidSourceKeyNameException, InvalidSourceObjectStateException, SourceException, SourceServiceException, SourceSdkClientException {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .range("bytes=" + start + "-" + end)
                 .build();
 
         byte[] data;

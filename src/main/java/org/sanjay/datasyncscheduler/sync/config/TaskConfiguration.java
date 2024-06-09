@@ -13,6 +13,7 @@ public class TaskConfiguration {
     private SourceType sourceType;
     private DestinationType destinationType;
     private String bucketName;
+    int chunkSize = 1024 * 1024;  // 1 MB
 
     public TaskConfiguration(int id, SourceType sourceType, DestinationType destinationType, String bucketName) {
         this.id = id;

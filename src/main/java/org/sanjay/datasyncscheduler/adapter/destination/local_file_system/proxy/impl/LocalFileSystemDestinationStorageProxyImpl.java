@@ -8,12 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,12 +25,12 @@ public class LocalFileSystemDestinationStorageProxyImpl implements DestinationSt
     }
 
     public void putObject(String bucketName, String fileName, byte[] data) throws SaveFailedException {
-        Path path =  Paths.get(getDesktopPath(), bucketName, fileName);
+        Path path = Paths.get(getDesktopPath(), bucketName, fileName);
         File file = path.toFile();
         file.getParentFile().mkdirs(); // Create the directories if they do not exist
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writer.write(new String(data));
+        try (FileOutputStream outputStream = new FileOutputStream(file, true)) {
+            outputStream.write(data);
         } catch (IOException e) {
             logger.error(e.getMessage());
             logger.debug(Arrays.toString(e.getStackTrace()));
