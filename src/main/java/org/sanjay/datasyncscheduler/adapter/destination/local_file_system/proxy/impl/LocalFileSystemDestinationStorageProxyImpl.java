@@ -13,16 +13,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Component
 @Primary
 public class LocalFileSystemDestinationStorageProxyImpl implements DestinationStorageProxy {
 
     private static final Logger logger = LoggerFactory.getLogger(DataSyncSchedulerApplication.class);
 
-    public void putObject(String bucketName, String fileName, byte[] data) throws SaveFailedException {
+    private String getDesktopPath() {
+        return System.getProperty("user.home") + File.separator + "Desktop";
+    }
 
-        // TODO: implement folder structure with bucket name
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+    public void putObject(String bucketName, String fileName, byte[] data) throws SaveFailedException {
+        Path path =  Paths.get(getDesktopPath(), bucketName, fileName);
+        File file = path.toFile();
+        file.getParentFile().mkdirs(); // Create the directories if they do not exist
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             writer.write(new String(data));
         } catch (IOException e) {
             logger.error(e.getMessage());
