@@ -30,7 +30,7 @@ public class CheckpointChunkServiceImpl implements CheckpointChunkService {
     }
 
     @Override
-    public long getLastProcessedByte(String bucketName, String key, long rangeStart, long rangeEnd) {
+    public long getLastProcessedByte(String bucketName, String key) {
         CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndKey(bucketName, key);
         if (checkpointChunk != null) {
             logger.info("CheckpointChunk found for bucketName: {} and key: {} and lastProcessedByte: {}", bucketName, key, checkpointChunk.getLastProcessedByte());

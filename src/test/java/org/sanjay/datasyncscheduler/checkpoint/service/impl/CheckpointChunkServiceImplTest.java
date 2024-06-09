@@ -43,7 +43,7 @@ public class CheckpointChunkServiceImplTest {
 
         when(checkpointChunkRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(checkpointChunk);
 
-        long lastProcessedByte = checkpointChunkService.getLastProcessedByte("test-bucket", "test-key", 0L, 2048L);
+        long lastProcessedByte = checkpointChunkService.getLastProcessedByte("test-bucket", "test-key");
 
         assertEquals(1024L, lastProcessedByte);
     }
@@ -52,7 +52,7 @@ public class CheckpointChunkServiceImplTest {
     void testGetLastProcessedByteNotFound() {
         when(checkpointChunkRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(null);
 
-        long lastProcessedByte = checkpointChunkService.getLastProcessedByte("test-bucket", "test-key", 0L, 2048L);
+        long lastProcessedByte = checkpointChunkService.getLastProcessedByte("test-bucket", "test-key");
 
         assertEquals(0L, lastProcessedByte);
     }
