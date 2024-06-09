@@ -15,7 +15,13 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     TaskRepositoryImpl() {
         allTasks = new LinkedList<>();
-        TaskConfiguration syncTaskConfig1 = new TaskConfiguration(1, SourceType.AWS_S3, DestinationType.Local_File_System, "skatla-rudderstack-1");
+        TaskConfiguration syncTaskConfig1 = new TaskConfiguration(
+                1,
+                SourceType.AWS_S3,
+                DestinationType.Local_File_System,
+                "skatla-rudderstack-1",
+                3
+        );
         allTasks.add(syncTaskConfig1);
     }
 

@@ -13,12 +13,14 @@ public class TaskConfiguration {
     private SourceType sourceType;
     private DestinationType destinationType;
     private String bucketName;
-    int chunkSize = 1024 * 1024;  // 1 MB
+    private int maxRetries = 3;
+    private int chunkSize = 1024 * 1024;  // 1 MB
 
-    public TaskConfiguration(int id, SourceType sourceType, DestinationType destinationType, String bucketName) {
+    public TaskConfiguration(int id, SourceType sourceType, DestinationType destinationType, String bucketName, int maxRetries) {
         this.id = id;
         this.sourceType = sourceType;
         this.destinationType = destinationType;
         this.bucketName = bucketName;
+        this.maxRetries = maxRetries;
     }
 }

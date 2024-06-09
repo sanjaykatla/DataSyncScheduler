@@ -37,17 +37,53 @@ public class TaskRunnerImpl implements TaskRunner {
         try {
             String key = syncObject.getKey();
             Long size = syncObject.getSize();
-            for(long start = 0, i=0; start < size; start += taskConfiguration.getChunkSize(), i++) {
-                logger.info("Downloading chunk {} for bucket: {} for object: {}", i, bucketName, key);
+            for (long start = 0, chunkNumber = 0; start < size; start += taskConfiguration.getChunkSize(), chunkNumber++) {
+                logger.info("Downloading chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
                 long end = Math.min(start + taskConfiguration.getChunkSize(), size);
-                byte[] data = sourceService.getObjectAsBytes(bucketName, key, start, end);
-                destinationService.putObject(bucketName, key, data);
-                logger.info("Uploaded chunk {} for bucket: {} for object: {}", i, bucketName, key);
+
+                byte[] data = getDataFromSourceWithRetry(bucketName, sourceService, key, start, end, chunkNumber, taskConfiguration.getMaxRetries());
+                saveToDestinationWithRetry(bucketName, destinationService, key, data, chunkNumber, taskConfiguration.getMaxRetries());
+
+                logger.info("Uploaded chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
             }
             logger.info("Task : {} completed for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, key);
         } catch (SourceServiceException | SaveFailedException | InvalidSourceKeyNameException |
                  InvalidSourceObjectStateException | SourceException | SourceSdkClientException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static byte[] getDataFromSourceWithRetry(String bucketName, SourceStorageService sourceService, String key, long start, long end, long chunkNumber, int maxRetries) throws SourceServiceException, InvalidSourceKeyNameException, InvalidSourceObjectStateException, SourceException, SourceSdkClientException {
+        byte[] data = null;
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                data = sourceService.getObjectAsBytes(bucketName, key, start, end);
+                break;
+            } catch (SourceServiceException | InvalidSourceKeyNameException | InvalidSourceObjectStateException |
+                     SourceException | SourceSdkClientException e) {
+                if (attempt == maxRetries) {
+                    logger.error("Failed to download chunk {} after {} attempts", chunkNumber, maxRetries);
+                    throw e;
+                }
+                logger.warn("Retrying download chunk {} attempt {} of {}", chunkNumber, attempt, maxRetries);
+            }
+        }
+        return data;
+    }
+
+    private static void saveToDestinationWithRetry(String bucketName, DestinationStorageService destinationService, String key, byte[] data, long chunkNumber, int maxRetries) throws SaveFailedException {
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                destinationService.putObject(bucketName, key, data);
+                logger.info("Uploaded chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
+                break;
+            } catch (SaveFailedException e) {
+                if (attempt == maxRetries) {
+                    logger.error("Failed to upload chunk {} after {} attempts", chunkNumber, maxRetries);
+                    throw e;
+                }
+                logger.warn("Retrying upload chunk {} attempt {} of {}", chunkNumber, attempt, maxRetries);
+            }
         }
     }
 }

@@ -35,7 +35,11 @@ public class AwsS3ProxyImpl implements SourceStorageProxy {
             List<S3Object> sourceObjects = res.contents();
 
             for(S3Object sourceObject : sourceObjects) {
-                SyncObject syncObject = new SyncObject(sourceObject.key(), sourceObject.size());
+                SyncObject syncObject = new SyncObject(
+                        sourceObject.key(),
+                        sourceObject.size(),
+                        sourceObject.lastModified()
+                );
                 objects.add(syncObject);
             }
         } catch (NoSuchBucketException e) {
