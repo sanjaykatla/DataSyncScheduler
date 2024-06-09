@@ -8,5 +8,5 @@ import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
 
 public interface TaskSplitter {
 
-    void splitAndSubmit(SyncTaskConfig syncTaskConfig, String bucketName) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException;
+    void splitAndSubmit(SyncTaskConfig syncTaskConfig) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException;
 }

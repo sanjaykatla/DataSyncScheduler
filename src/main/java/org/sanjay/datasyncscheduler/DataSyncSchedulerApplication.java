@@ -1,8 +1,5 @@
 package org.sanjay.datasyncscheduler;
 
-import lombok.RequiredArgsConstructor;
-import org.sanjay.datasyncscheduler.sync.service.TaskSplitter;
-import org.sanjay.datasyncscheduler.sync.service.impl.TaskSplitterImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

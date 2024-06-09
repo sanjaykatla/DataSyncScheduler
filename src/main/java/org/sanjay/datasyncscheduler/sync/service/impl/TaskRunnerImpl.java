@@ -11,11 +11,15 @@ import org.sanjay.datasyncscheduler.adapter.source.factory.SourceFactory;
 import org.sanjay.datasyncscheduler.adapter.source.service.SourceStorageService;
 import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
 import org.sanjay.datasyncscheduler.sync.service.TaskRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TaskRunnerImpl implements TaskRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskRunnerImpl.class);
 
     private final SourceFactory sourceFactory;
 
@@ -25,12 +29,14 @@ public class TaskRunnerImpl implements TaskRunner {
         SourceType sourceType = syncTaskConfig.getSourceType();
         DestinationType destinationType = syncTaskConfig.getDestinationType();
 
+        logger.info("Running Task : {}", syncTaskConfig.getId());
         SourceStorageService sourceService = sourceFactory.getSourceStorageService(sourceType);
         DestinationStorageService destinationService = destinationFactory.getDestinationStorageService(destinationType);
 
         try {
             byte[] data = sourceService.getObjectAsBytes(bucketName, key);
             destinationService.putObject(bucketName, key, data);
+            logger.info("Task : {} completed for bucket: {} for object: {}", syncTaskConfig.getId(), bucketName, key);
         } catch (SourceServiceException | SaveFailedException | InvalidSourceKeyNameException |
                  InvalidSourceObjectStateException | SourceException | SourceSdkClientException e) {
             throw new RuntimeException(e);

@@ -11,11 +11,15 @@ import org.sanjay.datasyncscheduler.adapter.source.enums.SourceType;
 @RequiredArgsConstructor
 public class SyncTaskConfig {
 
-    SourceType sourceType;
-    DestinationType destinationType;
+    private int id;
+    private SourceType sourceType;
+    private DestinationType destinationType;
+    private String bucketName;
 
-    public SyncTaskConfig(SourceType sourceType, DestinationType destinationType) {
+    public SyncTaskConfig(int id, SourceType sourceType, DestinationType destinationType, String bucketName) {
+        this.id = id;
         this.sourceType = sourceType;
         this.destinationType = destinationType;
+        this.bucketName = bucketName;
     }
 }

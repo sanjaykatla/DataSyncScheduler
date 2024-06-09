@@ -10,22 +10,29 @@ import org.sanjay.datasyncscheduler.adapter.source.service.SourceStorageService;
 import org.sanjay.datasyncscheduler.sync.config.SyncTaskConfig;
 import org.sanjay.datasyncscheduler.sync.service.TaskRunner;
 import org.sanjay.datasyncscheduler.sync.service.TaskSplitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TaskSplitterImpl implements TaskSplitter {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskSplitterImpl.class);
     private final SourceFactory sourceFactory;
 
     private final TaskRunner taskRunner;
 
     @Override
-    public void splitAndSubmit(SyncTaskConfig syncTaskConfig, String bucketName) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException {
+    public void splitAndSubmit(SyncTaskConfig syncTaskConfig) throws SourceServiceException, InvalidSourceKeyNameException, SourceException, SourceSdkClientException {
 
         SourceStorageService sourceStorageService = sourceFactory.getSourceStorageService(syncTaskConfig.getSourceType());
+        String bucketName = syncTaskConfig.getBucketName();
         sourceStorageService.listObjects(bucketName)
-                .forEach(objectKey -> taskRunner.run(syncTaskConfig, bucketName, objectKey));
+                .forEach(objectKey -> {
+                    logger.info("Task: {} is Submitted for bucket: {} for object: {}", syncTaskConfig.getId(), bucketName, objectKey);
+                    taskRunner.run(syncTaskConfig, bucketName, objectKey);
+                });
 
     }
 }
