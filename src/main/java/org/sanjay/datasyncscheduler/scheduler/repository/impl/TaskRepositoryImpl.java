@@ -1,7 +1,8 @@
-package org.sanjay.datasyncscheduler.scheduler.repository;
+package org.sanjay.datasyncscheduler.scheduler.repository.impl;
 
 import org.sanjay.datasyncscheduler.adapter.destination.enums.DestinationType;
 import org.sanjay.datasyncscheduler.adapter.source.enums.SourceType;
+import org.sanjay.datasyncscheduler.scheduler.repository.TaskRepository;
 import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                 1,
                 SourceType.AWS_S3,
                 DestinationType.Local_File_System,
-                "skatla-rudderstack-1",
+                "skatla-rudderstack-2",
                 3
         );
         allTasks.add(syncTaskConfig1);

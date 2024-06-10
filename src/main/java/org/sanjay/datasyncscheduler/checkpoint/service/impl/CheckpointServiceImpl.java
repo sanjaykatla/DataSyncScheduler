@@ -19,26 +19,26 @@ public class CheckpointServiceImpl implements CheckpointService {
     }
 
     @Override
-    public void upsertCheckpoint(String bucketName, String key, long lastSuccessfulSyncTime) {
-        Checkpoint checkpoint = checkpointRepository.findByBucketNameAndKey(bucketName, key);
+    public void upsertCheckpoint(String bucketName, String objectName, long lastSuccessfulSyncTime) {
+        Checkpoint checkpoint = checkpointRepository.findByBucketNameAndObjectName(bucketName, objectName);
         if (checkpoint == null) {
             checkpoint = new Checkpoint();
             checkpoint.setBucketName(bucketName);
-            checkpoint.setKey(key);
+            checkpoint.setObjectName(objectName);
         }
         checkpoint.setLastSuccessfulSyncTime(lastSuccessfulSyncTime);
         checkpointRepository.save(checkpoint);
-        logger.info("Checkpoint upserted successfully for bucketName: {} and key: {}", bucketName, key);
+        logger.info("Checkpoint upserted successfully for bucketName: {} and objectName: {}", bucketName, objectName);
     }
 
     @Override
-    public long getLastSuccessfulSyncTime(String bucketName, String key) {
-        Checkpoint checkpoint = checkpointRepository.findByBucketNameAndKey(bucketName, key);
+    public long getLastSuccessfulSyncTime(String bucketName, String objectName) {
+        Checkpoint checkpoint = checkpointRepository.findByBucketNameAndObjectName(bucketName, objectName);
         if (checkpoint != null) {
-            logger.info("Checkpoint found for bucketName: {} and key: {} and lastSuccessfulSyncTime: {}", bucketName, key, checkpoint.getLastSuccessfulSyncTime());
+            logger.info("Checkpoint found for bucketName: {} and objectName: {} and lastSuccessfulSyncTime: {}", bucketName, objectName, checkpoint.getLastSuccessfulSyncTime());
             return checkpoint.getLastSuccessfulSyncTime();
         }
-        logger.info("Checkpoint not found for bucketName: {} and key: {}", bucketName, key);
+        logger.info("Checkpoint not found for bucketName: {} and objectName: {}", bucketName, objectName);
         return 0;
     }
 }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CheckpointChunkRepository extends JpaRepository<CheckpointChunk, Long> {
 
-    CheckpointChunk findByBucketNameAndKey(String bucketName, String key);
+    CheckpointChunk findByBucketNameAndObjectName(String bucketName, String objectName);
 }

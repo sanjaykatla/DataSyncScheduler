@@ -29,7 +29,7 @@ class CheckpointServiceImplTest {
     void testSaveCheckpoint() {
         when(checkpointRepository.save(any(Checkpoint.class))).thenReturn(new Checkpoint());
 
-        checkpointService.saveCheckpoint("test-bucket", "test-key", 1625494321L);
+        checkpointService.upsertCheckpoint("test-bucket", "test-key", 1625494321L);
 
         verify(checkpointRepository, times(1)).save(any(Checkpoint.class));
     }
@@ -38,10 +38,10 @@ class CheckpointServiceImplTest {
     void testGetLastSuccessfulSyncTimeFound() {
         Checkpoint checkpoint = new Checkpoint();
         checkpoint.setBucketName("test-bucket");
-        checkpoint.setKey("test-key");
+        checkpoint.setObjectName("test-key");
         checkpoint.setLastSuccessfulSyncTime(1625494321L);
 
-        when(checkpointRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(checkpoint);
+        when(checkpointRepository.findByBucketNameAndObjectName("test-bucket", "test-key")).thenReturn(checkpoint);
 
         long lastSuccessfulSyncTime = checkpointService.getLastSuccessfulSyncTime("test-bucket", "test-key");
 
@@ -50,7 +50,7 @@ class CheckpointServiceImplTest {
 
     @Test
     void testGetLastSuccessfulSyncTimeNotFound() {
-        when(checkpointRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(null);
+        when(checkpointRepository.findByBucketNameAndObjectName("test-bucket", "test-key")).thenReturn(null);
 
         long lastSuccessfulSyncTime = checkpointService.getLastSuccessfulSyncTime("test-bucket", "test-key");
 

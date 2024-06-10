@@ -19,9 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class TaskRunnerImpl implements TaskRunner {
@@ -48,6 +45,9 @@ public class TaskRunnerImpl implements TaskRunner {
             String key = syncObject.getKey();
             Long size = syncObject.getSize();
             long lastProcessedByte = checkpointChunkService.getLastProcessedByte(bucketName, key);
+            if(lastProcessedByte !=0){
+                logger.info("Resuming task : {} for bucket: {} for object: {} from byte: {}", taskConfiguration.getId(), bucketName, key, lastProcessedByte);
+            }
             for (long start = lastProcessedByte, chunkNumber = 0; start < size; start += taskConfiguration.getChunkSize(), chunkNumber++) {
                 logger.info("Downloading chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
                 long end = Math.min(start + taskConfiguration.getChunkSize(), size);
@@ -86,6 +86,7 @@ public class TaskRunnerImpl implements TaskRunner {
     private void saveToDestinationWithRetry(String bucketName, DestinationStorageService destinationService, String key, byte[] data, long chunkNumber, int maxRetries, long lastProcessedByte) throws SaveFailedException {
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
+                Thread.sleep(3000);
                 destinationService.putObject(bucketName, key, data);
                 checkpointChunkService.saveCheckpointChunk(bucketName, key, lastProcessedByte);
                 logger.info("Uploaded chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
@@ -96,6 +97,8 @@ public class TaskRunnerImpl implements TaskRunner {
                     throw e;
                 }
                 logger.warn("Retrying upload chunk {} attempt {} of {}", chunkNumber, attempt, maxRetries);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }

@@ -16,6 +16,6 @@ public class CheckpointChunk {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String bucketName;
-    private String key;
+    private String objectName;
     private long lastProcessedByte;
 }

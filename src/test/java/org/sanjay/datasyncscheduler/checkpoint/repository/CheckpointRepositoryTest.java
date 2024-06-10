@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +28,7 @@ public class CheckpointRepositoryTest {
     void testSaveAndFindByBucketNameAndKey() {
         Checkpoint checkpoint = new Checkpoint();
         checkpoint.setBucketName("test-bucket");
-        checkpoint.setKey("test-key");
+        checkpoint.setObjectName("test-key");
         checkpoint.setLastSuccessfulSyncTime(12345L);
 
         checkpointRepository.save(checkpoint);
@@ -37,7 +36,7 @@ public class CheckpointRepositoryTest {
         Checkpoint found = checkpointRepository.findByBucketNameAndKey("test-bucket", "test-key");
         assertNotNull(found);
         assertEquals("test-bucket", found.getBucketName());
-        assertEquals("test-key", found.getKey());
+        assertEquals("test-key", found.getObjectName());
         assertEquals(12345L, found.getLastSuccessfulSyncTime());
     }
 
@@ -45,7 +44,7 @@ public class CheckpointRepositoryTest {
     void testSaveAndFindById() {
         Checkpoint checkpoint = new Checkpoint();
         checkpoint.setBucketName("test-bucket");
-        checkpoint.setKey("test-key");
+        checkpoint.setObjectName("test-key");
         checkpoint.setLastSuccessfulSyncTime(0L);
 
         Checkpoint saved = checkpointRepository.save(checkpoint);
@@ -58,7 +57,7 @@ public class CheckpointRepositoryTest {
     void testDelete() {
         Checkpoint checkpoint = new Checkpoint();
         checkpoint.setBucketName("test-bucket");
-        checkpoint.setKey("test-key");
+        checkpoint.setObjectName("test-key");
         checkpoint.setLastSuccessfulSyncTime(12345L);
 
         Checkpoint saved = checkpointRepository.save(checkpoint);

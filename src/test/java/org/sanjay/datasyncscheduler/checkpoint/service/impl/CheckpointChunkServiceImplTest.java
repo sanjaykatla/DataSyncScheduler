@@ -38,7 +38,7 @@ public class CheckpointChunkServiceImplTest {
     void testGetLastProcessedByteFound() {
         CheckpointChunk checkpointChunk = new CheckpointChunk();
         checkpointChunk.setBucketName("test-bucket");
-        checkpointChunk.setKey("test-key");
+        checkpointChunk.setObjectName("test-key");
         checkpointChunk.setLastProcessedByte(1024L);
 
         when(checkpointChunkRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(checkpointChunk);
@@ -61,7 +61,7 @@ public class CheckpointChunkServiceImplTest {
     void testDeleteCheckpointChunkFound() {
         CheckpointChunk checkpointChunk = new CheckpointChunk();
         checkpointChunk.setBucketName("test-bucket");
-        checkpointChunk.setKey("test-key");
+        checkpointChunk.setObjectName("test-key");
 
         when(checkpointChunkRepository.findByBucketNameAndKey("test-bucket", "test-key")).thenReturn(checkpointChunk);
         doNothing().when(checkpointChunkRepository).delete(checkpointChunk);

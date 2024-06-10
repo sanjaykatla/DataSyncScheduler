@@ -18,23 +18,23 @@ public class CheckpointChunkServiceImpl implements CheckpointChunkService {
     }
 
     @Override
-    public void saveCheckpointChunk(String bucketName, String key, long lastProcessedByte) {
+    public void saveCheckpointChunk(String bucketName, String objectName, long lastProcessedByte) {
 
-        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndKey(bucketName, key);
+        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndObjectName(bucketName, objectName);
         if (checkpointChunk == null) {
             checkpointChunk = new CheckpointChunk();
             checkpointChunk.setBucketName(bucketName);
-            checkpointChunk.setKey(key);
+            checkpointChunk.setObjectName(objectName);
         }
         checkpointChunk.setLastProcessedByte(lastProcessedByte);
         checkpointChunkRepository.save(checkpointChunk);
-        logger.info("CheckpointChunk saved successfully for bucketName: {} and key: {}", bucketName, key);
+        logger.info("CheckpointChunk saved successfully for bucketName: {} and objectName: {}", bucketName, objectName);
 
     }
 
     @Override
     public long getLastProcessedByte(String bucketName, String key) {
-        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndKey(bucketName, key);
+        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndObjectName(bucketName, key);
         if (checkpointChunk != null) {
             logger.info("CheckpointChunk found for bucketName: {} and key: {} and lastProcessedByte: {}", bucketName, key, checkpointChunk.getLastProcessedByte());
             return checkpointChunk.getLastProcessedByte();
@@ -46,7 +46,7 @@ public class CheckpointChunkServiceImpl implements CheckpointChunkService {
     @Override
     public void deleteCheckpointChunk(String bucketName, String key) {
 
-        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndKey(bucketName, key);
+        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndObjectName(bucketName, key);
         if (checkpointChunk != null) {
             logger.info("Deleting CheckpointChunk for bucketName: {} and key: {}", bucketName, key);
             checkpointChunkRepository.delete(checkpointChunk);

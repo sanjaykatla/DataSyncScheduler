@@ -28,7 +28,7 @@ public class CheckpointChunkRepositoryTest {
     void testSaveAndFindByBucketNameAndKey() {
         CheckpointChunk checkpointChunk = new CheckpointChunk();
         checkpointChunk.setBucketName("test-bucket");
-        checkpointChunk.setKey("test-key");
+        checkpointChunk.setObjectName("test-key");
         checkpointChunk.setLastProcessedByte(12345L);
 
         checkpointChunkRepository.save(checkpointChunk);
@@ -36,7 +36,7 @@ public class CheckpointChunkRepositoryTest {
         CheckpointChunk found = checkpointChunkRepository.findByBucketNameAndKey("test-bucket", "test-key");
         assertNotNull(found);
         assertEquals("test-bucket", found.getBucketName());
-        assertEquals("test-key", found.getKey());
+        assertEquals("test-key", found.getObjectName());
         assertEquals(12345L, found.getLastProcessedByte());
     }
 
@@ -44,7 +44,7 @@ public class CheckpointChunkRepositoryTest {
     void testSaveAndFindById() {
         CheckpointChunk checkpointChunk = new CheckpointChunk();
         checkpointChunk.setBucketName("test-bucket");
-        checkpointChunk.setKey("test-key");
+        checkpointChunk.setObjectName("test-key");
         checkpointChunk.setLastProcessedByte(12345L);
 
         CheckpointChunk saved = checkpointChunkRepository.save(checkpointChunk);
@@ -57,7 +57,7 @@ public class CheckpointChunkRepositoryTest {
     void testDelete() {
         CheckpointChunk checkpointChunk = new CheckpointChunk();
         checkpointChunk.setBucketName("test-bucket");
-        checkpointChunk.setKey("test-key");
+        checkpointChunk.setObjectName("test-key");
         checkpointChunk.setLastProcessedByte(12345L);
 
         CheckpointChunk saved = checkpointChunkRepository.save(checkpointChunk);
