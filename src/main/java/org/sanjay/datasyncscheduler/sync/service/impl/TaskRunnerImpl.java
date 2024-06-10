@@ -14,10 +14,12 @@ import org.sanjay.datasyncscheduler.checkpoint.service.CheckpointService;
 import org.sanjay.datasyncscheduler.model.SyncObject;
 import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 import org.sanjay.datasyncscheduler.sync.service.TaskRunner;
+import org.sanjay.datasyncscheduler.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -55,7 +57,7 @@ public class TaskRunnerImpl implements TaskRunner {
 
                 logger.info("Uploaded chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
             }
-            checkpointService.upsertCheckpoint(bucketName, key, LocalDateTime.now().getNano());
+            checkpointService.upsertCheckpoint(bucketName, key, TimeUtil.getCurrentTimeInNanos());
             logger.info("Task : {} completed for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, key);
         } catch (SourceServiceException | SaveFailedException | InvalidSourceKeyNameException |
                  InvalidSourceObjectStateException | SourceException | SourceSdkClientException e) {

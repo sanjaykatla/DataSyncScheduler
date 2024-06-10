@@ -12,6 +12,7 @@ import org.sanjay.datasyncscheduler.model.SyncObject;
 import org.sanjay.datasyncscheduler.sync.config.TaskConfiguration;
 import org.sanjay.datasyncscheduler.sync.service.TaskRunner;
 import org.sanjay.datasyncscheduler.sync.service.TaskSplitter;
+import org.sanjay.datasyncscheduler.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,6 @@ public class TaskSplitterImpl implements TaskSplitter {
 
     private boolean isObjectSyncRequired(String bucketName, String key, SyncObject syncObject) {
         long lastSuccessfulSyncTime = checkpointService.getLastSuccessfulSyncTime(bucketName, key);
-        return lastSuccessfulSyncTime == 0 || lastSuccessfulSyncTime < syncObject.getLastModified().getNano();
+        return lastSuccessfulSyncTime == 0 || lastSuccessfulSyncTime < TimeUtil.getNanos(syncObject.getLastModified()) ;
     }
 }

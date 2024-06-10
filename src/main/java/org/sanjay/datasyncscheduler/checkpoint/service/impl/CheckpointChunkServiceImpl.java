@@ -20,9 +20,12 @@ public class CheckpointChunkServiceImpl implements CheckpointChunkService {
     @Override
     public void saveCheckpointChunk(String bucketName, String key, long lastProcessedByte) {
 
-        CheckpointChunk checkpointChunk = new CheckpointChunk();
-        checkpointChunk.setBucketName(bucketName);
-        checkpointChunk.setKey(key);
+        CheckpointChunk checkpointChunk = checkpointChunkRepository.findByBucketNameAndKey(bucketName, key);
+        if (checkpointChunk == null) {
+            checkpointChunk = new CheckpointChunk();
+            checkpointChunk.setBucketName(bucketName);
+            checkpointChunk.setKey(key);
+        }
         checkpointChunk.setLastProcessedByte(lastProcessedByte);
         checkpointChunkRepository.save(checkpointChunk);
         logger.info("CheckpointChunk saved successfully for bucketName: {} and key: {}", bucketName, key);
