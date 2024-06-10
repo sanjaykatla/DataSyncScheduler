@@ -19,16 +19,16 @@ public class CheckpointServiceImpl implements CheckpointService {
     }
 
     @Override
-    public void saveCheckpoint(String bucketName, String key, long lastSuccessfulSyncTime) {
-
-        Checkpoint checkpoint = new Checkpoint();
-        checkpoint.setBucketName(bucketName);
-        checkpoint.setKey(key);
+    public void upsertCheckpoint(String bucketName, String key, long lastSuccessfulSyncTime) {
+        Checkpoint checkpoint = checkpointRepository.findByBucketNameAndKey(bucketName, key);
+        if (checkpoint == null) {
+            checkpoint = new Checkpoint();
+            checkpoint.setBucketName(bucketName);
+            checkpoint.setKey(key);
+        }
         checkpoint.setLastSuccessfulSyncTime(lastSuccessfulSyncTime);
-
         checkpointRepository.save(checkpoint);
-        logger.info("Checkpoint saved successfully for bucketName: {} and key: {}", bucketName, key);
-
+        logger.info("Checkpoint upserted successfully for bucketName: {} and key: {}", bucketName, key);
     }
 
     @Override

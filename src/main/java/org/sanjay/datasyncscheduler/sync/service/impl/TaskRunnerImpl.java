@@ -55,7 +55,7 @@ public class TaskRunnerImpl implements TaskRunner {
 
                 logger.info("Uploaded chunk {} for bucket: {} for object: {}", chunkNumber, bucketName, key);
             }
-            checkpointService.saveCheckpoint(bucketName, key, LocalDateTime.now().getNano());
+            checkpointService.upsertCheckpoint(bucketName, key, LocalDateTime.now().getNano());
             logger.info("Task : {} completed for bucket: {} for object: {}", taskConfiguration.getId(), bucketName, key);
         } catch (SourceServiceException | SaveFailedException | InvalidSourceKeyNameException |
                  InvalidSourceObjectStateException | SourceException | SourceSdkClientException e) {
